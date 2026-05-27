@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opëam — Wine & Dine Restrobar, Ipoh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0905;
+    --off-black: #111008;
+    --dark: #1a1810;
+    --gold: #c8a96e;
+    --gold-light: #e8d5a8;
+    --gold-dim: #8a7045;
+    --cream: #f5efe4;
+    --cream-dim: #d4c9b4;
+    --white: #fdfaf4;
+    --text-muted: #7a7060;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 56px;
+    background: linear-gradient(to bottom, rgba(10,9,5,0.95) 0%, transparent 100%);
+    transition: background 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(10,9,5,0.97);
+    padding: 18px 56px;
+    border-bottom: 1px solid rgba(200,169,110,0.12);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-logo-mark {
+    width: 20px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-reserve {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    padding: 10px 22px;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  .nav-reserve:hover { background: var(--gold-light); }
+
+  /* ── HERO ── */
+  .hero {
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 60%, rgba(200,169,110,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 80% at 50% 100%, rgba(200,169,110,0.04) 0%, transparent 60%),
+      var(--black);
+  }
+
+  /* Decorative lines */
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .hero-line {
+    position: absolute;
+    background: rgba(200,169,110,0.08);
+  }
+  .hero-line.v1 { width: 1px; height: 100%; left: 20%; top: 0; }
+  .hero-line.v2 { width: 1px; height: 100%; right: 20%; top: 0; }
+  .hero-line.h1 { height: 1px; width: 100%; top: 15%; }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-logo-large {
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeIn 1.2s 0.5s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(72px, 10vw, 140px);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    margin: 36px auto;
+    opacity: 0;
+    animation: fadeIn 1s 1.1s forwards;
+  }
+
+  .hero-tagline {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0;
+    animation: fadeUp 1s 1.3s forwards;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeIn 1s 2s forwards;
+  }
+  .hero-scroll span {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+    animation: scrollPulse 2s infinite;
+  }
+
+  /* ── INTRO SECTION ── */
+  .section-intro {
+    padding: 140px 56px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+
+  .intro-label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .intro-label::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .intro-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+  .intro-heading em { font-style: italic; color: var(--gold); }
+
+  .intro-body {
+    font-size: 13px;
+    line-height: 2;
+    color: var(--cream-dim);
+    font-weight: 300;
+  }
+
+  .intro-right {
+    position: relative;
+  }
+
+  .intro-atmosphere {
+    border: 1px solid rgba(200,169,110,0.18);
+    padding: 0;
+    position: relative;
+  }
+  .intro-atm-line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(200,169,110,0.4), transparent);
+  }
+  .intro-atm-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 52px 44px;
+  }
+  .intro-atm-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 96px;
+    font-weight: 300;
+    color: rgba(200,169,110,0.18);
+    line-height: 1;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+  }
+  .intro-atm-vr {
+    width: 1px;
+    height: 80px;
+    background: rgba(200,169,110,0.2);
+    margin: 0 32px;
+    flex-shrink: 0;
+  }
+  .intro-atm-address {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .intro-atm-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--cream-dim);
+    line-height: 1.6;
+  }
+
+  /* ── STORY SECTION ── */
+  .section-story {
+    padding: 120px 56px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .section-story::before {
+    content: 'OPËAM';
+    position: absolute;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20vw;
+    font-weight: 300;
+    color: rgba(200,169,110,0.03);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: 0.1em;
+  }
+
+  .story-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .story-label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .story-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--cream);
+    margin-bottom: 40px;
+  }
+  .story-attr {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 56px;
+  }
+  .story-body {
+    font-size: 13px;
+    line-height: 2;
+    color: var(--cream-dim);
+    text-align: left;
+    column-count: 2;
+    column-gap: 48px;
+  }
+
+  /* ── MENU SECTION ── */
+  .section-menu {
+    padding: 140px 56px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .section-header .label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .section-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+  .section-header h2 em { font-style: italic; color: var(--gold); }
+
+  .menu-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 64px;
+    border: 1px solid rgba(200,169,110,0.2);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .menu-tab {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 14px 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-right: 1px solid rgba(200,169,110,0.2);
+  }
+  .menu-tab:last-child { border-right: none; }
+  .menu-tab.active {
+    color: var(--black);
+    background: var(--gold);
+  }
+  .menu-tab:not(.active):hover { color: var(--gold); background: rgba(200,169,110,0.05); }
+
+  .menu-panel { display: none; }
+  .menu-panel.active { display: block; }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2px;
+    background: rgba(200,169,110,0.08);
+  }
+
+  .menu-item {
+    padding: 20px 28px;
+    background: var(--off-black);
+    border-bottom: 1px solid rgba(200,169,110,0.06);
+    transition: background 0.25s;
+  }
+  .menu-item:hover { background: rgba(200,169,110,0.04); }
+
+  .menu-item-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    color: var(--cream);
+    flex: 1;
+  }
+  .menu-item-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .menu-category-title {
+    grid-column: 1 / -1;
+    padding: 28px 28px 8px;
+    background: var(--dark);
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── EXPERIENCE SECTION ── */
+  .section-experience {
+    padding: 120px 56px;
+    background: var(--dark);
+  }
+  .experience-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(200,169,110,0.1);
+  }
+  .experience-card {
+    padding: 60px 40px;
+    background: var(--off-black);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .experience-card:hover { background: #161410; }
+  .experience-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px;
+    height: 0;
+    background: var(--gold);
+    transition: height 0.4s;
+  }
+  .experience-card:hover::before { height: 100%; }
+
+  .exp-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    color: rgba(200,169,110,0.12);
+    line-height: 1;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+  .exp-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--cream);
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+  .exp-body {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--text-muted);
+  }
+
+  /* ── RESERVE / CTA ── */
+  .section-cta {
+    padding: 160px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .section-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(200,169,110,0.06) 0%, transparent 70%);
+  }
+  .cta-inner { position: relative; z-index: 1; }
+  .cta-label {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .cta-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 48px;
+  }
+  .cta-heading em { font-style: italic; color: var(--gold); }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--black);
+    background: var(--gold);
+    padding: 18px 48px;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-family: 'Montserrat', sans-serif;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    letter-spacing: 0.4em;
+  }
+  .btn-secondary {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--cream-dim);
+    background: transparent;
+    padding: 18px 48px;
+    border: 1px solid rgba(200,169,110,0.3);
+    text-decoration: none;
+    transition: all 0.3s;
+    font-family: 'Montserrat', sans-serif;
+    display: inline-block;
+  }
+  .btn-secondary:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* ── CONTACT / FOOTER ── */
+  footer {
+    padding: 80px 56px 48px;
+    background: var(--off-black);
+    border-top: 1px solid rgba(200,169,110,0.1);
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 64px;
+  }
+  .footer-brand .logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: var(--cream);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+  .footer-brand p {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--text-muted);
+    max-width: 280px;
+  }
+  .footer-col h4 {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li {
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .footer-col ul li a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-col ul li a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(200,169,110,0.08);
+  }
+  .footer-bottom p {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .footer-social {
+    display: flex;
+    gap: 24px;
+  }
+  .footer-social a {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-social a:hover { color: var(--gold); }
+
+  /* ── HORIZONTAL RULE ── */
+  .gold-rule {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 200px;
+    margin: 0 auto 64px;
+  }
+  .gold-rule::before, .gold-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dim));
+  }
+  .gold-rule::after {
+    background: linear-gradient(to left, transparent, var(--gold-dim));
+  }
+  .gold-rule-diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-delay-1 { transition-delay: 0.15s; }
+  .reveal-delay-2 { transition-delay: 0.3s; }
+  .reveal-delay-3 { transition-delay: 0.45s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 24px 28px; }
+    nav.scrolled { padding: 16px 28px; }
+    .nav-links { display: none; }
+    .section-intro { grid-template-columns: 1fr; gap: 56px; padding: 80px 28px; }
+    .section-story { padding: 80px 28px; }
+    .story-body { column-count: 1; }
+    .section-menu { padding: 80px 28px; }
+    .menu-tabs { flex-wrap: wrap; }
+    .experience-inner { grid-template-columns: 1fr; }
+    .section-experience { padding: 80px 28px; }
+    .section-cta { padding: 100px 28px; }
+    footer { padding: 60px 28px 40px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"><img src="data:image/png;base64,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" style="height:28px;width:auto;display:block;" alt="Opeam Logo"></div>
+    Opëam
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="tel:+60167400782" class="nav-reserve">Reserve a Table</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines">
+    <div class="hero-line v1"></div>
+    <div class="hero-line v2"></div>
+    <div class="hero-line h1"></div>
+  </div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Ipoh, Malaysia · Est. Restrobar</p>
+    <div class="hero-logo-large"><img src="data:image/png;base64,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" style="height:72px;width:auto;display:block;" alt="Opeam Logo"></div>
+    <h1 class="hero-title">Op<em>ë</em>am</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-tagline">Premium Wine &amp; Dine · Ipoh · Japanese–European Dining</p>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section id="about" class="section-intro">
+  <div class="reveal">
+    <div class="intro-label">About Opëam</div>
+    <h2 class="intro-heading">
+      Great food, cocktails<br>and wine to <em>relax your soul.</em>
+    </h2>
+    <p class="intro-body">
+      Nestled inside a bungalow on Lebuh Hock Lee, Opëam is Ipoh's most quietly refined dining destination. Chef-driven Japanese–European cuisine where every dish reflects an obsession with premium ingredients and focused technique.<br><br>
+      Ingredient-led. Technique-focused. Quietly refined.
+    </p>
+  </div>
+  <div class="reveal reveal-delay-1">
+    <div class="intro-atmosphere">
+      <div class="intro-atm-line top"></div>
+      <div class="intro-atm-inner">
+        <span class="intro-atm-number">28</span>
+        <div class="intro-atm-vr"></div>
+        <div class="intro-atm-text">
+          <p class="intro-atm-address">Lebuh Hock Lee, Ipoh</p>
+          <p class="intro-atm-sub">A bungalow. A discreet sign.<br>An experience unlike any other.</p>
+        </div>
+      </div>
+      <div class="intro-atm-line bottom"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="section-story">
+  <div class="story-inner">
+    <div class="reveal">
+      <p class="story-label">The Story</p>
+      <blockquote class="story-quote">
+        "Less is more — reliant purely on light touch,<br>seasonings, and a discerning palate."
+      </blockquote>
+      <p class="story-attr">— Chef Nicole Gan, Founder</p>
+    </div>
+    <div class="gold-rule"><div class="gold-rule-diamond"></div></div>
+    <p class="story-body reveal">
+      Opëam is the brainchild of young chef-entrepreneur Nicole Gan, from Seremban. After obtaining a degree in mass communications, Nicole took off for Los Angeles, New York and Philadelphia — where she developed a deep passion for baking and an eye for quality produce. Returning to Ipoh, she opened Patisserie Boutique in Old Town, quickly garnering a faithful following for its delectable pastries and simple fare.
+      <br><br>
+      Now, with Opëam, Nicole has moved into fine food and beverage in a dramatic way. Housed in a discreet bungalow behind a quietly lit sign, the restaurant embodies the Californian philosophy she absorbed abroad — menus that are light, minimal in oil, and reliant purely on the natural flavours of exceptional ingredients. Despite no formal chef's training, her beautifully plated dishes speak for themselves.
+    </p>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="section-menu">
+  <div class="section-header reveal">
+    <p class="label">Curated Menu</p>
+    <h2>Taste the <em>Craft</em></h2>
+  </div>
+
+  <div class="menu-tabs reveal">
+    <button class="menu-tab active" onclick="showMenu('sharing')">Sharing</button>
+    <button class="menu-tab" onclick="showMenu('pizza')">Skinny Pizza</button>
+    <button class="menu-tab" onclick="showMenu('pasta')">Pasta &amp; Risotto</button>
+    <button class="menu-tab" onclick="showMenu('mains')">Mains</button>
+    <button class="menu-tab" onclick="showMenu('dessert')">Dessert</button>
+  </div>
+
+  <!-- SHARING -->
+  <div class="menu-panel active" id="menu-sharing">
+    <div class="menu-grid">
+      <div class="menu-category-title">Sharing Plates</div>
+      <div class="menu-item"><span class="menu-item-name">Sautéed mushroom</span></div>
+      <div class="menu-item"><span class="menu-item-name">Edamame</span></div>
+      <div class="menu-item"><span class="menu-item-name">Sautéed abanico iberico pork</span></div>
+      <div class="menu-item"><span class="menu-item-name">Sweet potato fries</span></div>
+      <div class="menu-item"><span class="menu-item-name">Thick cut fries</span></div>
+      <div class="menu-item"><span class="menu-item-name">German pork sausage &amp; sauerkraut</span></div>
+      <div class="menu-item"><span class="menu-item-name">Pesto / garlic butter escargot</span></div>
+      <div class="menu-item"><span class="menu-item-name">Japanese white fish karaage</span></div>
+      <div class="menu-item"><span class="menu-item-name">Japanese fried calamari</span></div>
+      <div class="menu-item"><span class="menu-item-name">Japanese grilled squid</span></div>
+      <div class="menu-item"><span class="menu-item-name">Parma ham, buratta &amp; fries</span></div>
+      <div class="menu-item"><span class="menu-item-name">Tuna tataki</span></div>
+    </div>
+  </div>
+
+  <!-- PIZZA -->
+  <div class="menu-panel" id="menu-pizza">
+    <div class="menu-grid">
+      <div class="menu-category-title">Skinny Pizza</div>
+      <div class="menu-item"><span class="menu-item-name">Button mushroom</span></div>
+      <div class="menu-item"><span class="menu-item-name">Sundries tomato</span></div>
+      <div class="menu-item"><span class="menu-item-name">Garden herbs</span></div>
+      <div class="menu-item"><span class="menu-item-name">Kimchi mushroom</span></div>
+      <div class="menu-item"><span class="menu-item-name">Beef pepperoni</span></div>
+      <div class="menu-item"><span class="menu-item-name">Smoked duck</span></div>
+      <div class="menu-item"><span class="menu-item-name">Spanish iberico bacon</span></div>
+      <div class="menu-item"><span class="menu-item-name">Smoked salmon</span></div>
+      <div class="menu-item"><span class="menu-item-name">Gorgonzola pizza</span></div>
+      <div class="menu-item"><span class="menu-item-name">Buratta pizza</span></div>
+      <div class="menu-item"><span class="menu-item-name">Signature black truffle</span></div>
+      <div class="menu-item"><span class="menu-item-name">Parma ham</span></div>
+      <div class="menu-item"><span class="menu-item-name">Scallop and prawn</span></div>
+    </div>
+  </div>
+
+  <!-- PASTA & RISOTTO -->
+  <div class="menu-panel" id="menu-pasta">
+    <div class="menu-grid">
+      <div class="menu-category-title">Risotto</div>
+      <div class="menu-item"><span class="menu-item-name">Iberico pork ribs risotto</span></div>
+      <div class="menu-item"><span class="menu-item-name">Iberico pork chop pesto risotto</span></div>
+      <div class="menu-item"><span class="menu-item-name">Creamy scallop risotto</span></div>
+      <div class="menu-item"><span class="menu-item-name">Prawn and ikura risotto</span></div>
+      <div class="menu-category-title">Pasta</div>
+      <div class="menu-item"><span class="menu-item-name">Mushroom and vegetable</span></div>
+      <div class="menu-item"><span class="menu-item-name">Creamy sundries tomato</span></div>
+      <div class="menu-item"><span class="menu-item-name">Creamy chicken wafu spaghetti</span></div>
+      <div class="menu-item"><span class="menu-item-name">Iberico pork bacon aglio-olio</span></div>
+      <div class="menu-item"><span class="menu-item-name">Iberico pork chop marinara</span></div>
+      <div class="menu-item"><span class="menu-item-name">Wagyu beef bolognese</span></div>
+      <div class="menu-item"><span class="menu-item-name">Parma ham carbonara</span></div>
+      <div class="menu-item"><span class="menu-item-name">Crispy duck sweet and sour spaghetti</span></div>
+      <div class="menu-item"><span class="menu-item-name">Seafood aglio-olio</span></div>
+      <div class="menu-item"><span class="menu-item-name">Hokkaido scallop and ikura aglio-olio</span></div>
+    </div>
+  </div>
+
+  <!-- MAINS -->
+  <div class="menu-panel" id="menu-mains">
+    <div class="menu-grid">
+      <div class="menu-category-title">Main Course</div>
+      <div class="menu-item"><span class="menu-item-name">Australia wagyu beef</span></div>
+      <div class="menu-item"><span class="menu-item-name">Japan Kagoshima wagyu beef</span></div>
+      <div class="menu-item"><span class="menu-item-name">New Zealand baby lamb rack <span class="menu-item-note">Grilled or Crusty</span></span></div>
+      <div class="menu-item"><span class="menu-item-name">Salmon trout and ikura</span></div>
+      <div class="menu-item"><span class="menu-item-name">Grilled cod fish</span></div>
+      <div class="menu-item"><span class="menu-item-name">Spanish iberico pork chop <span class="menu-item-note">Grilled or Crusty</span></span></div>
+      <div class="menu-item"><span class="menu-item-name">Unagi bento — eel rice</span></div>
+      <div class="menu-item"><span class="menu-item-name">Spanish Iberico pork ribs (Half)</span></div>
+      <div class="menu-item"><span class="menu-item-name">Spanish Iberico pork ribs (Full)</span></div>
+    </div>
+  </div>
+
+  <!-- DESSERT -->
+  <div class="menu-panel" id="menu-dessert">
+    <div class="menu-grid">
+      <div class="menu-category-title">Dessert</div>
+      <div class="menu-item"><span class="menu-item-name">Bomb Alaska</span></div>
+      <div class="menu-item"><span class="menu-item-name">Valrhona chocolate bonbons</span></div>
+      <div class="menu-item"><span class="menu-item-name">Baileys Tiramisu</span></div>
+      <div class="menu-item"><span class="menu-item-name">Burnt cheese cake</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="section-experience">
+  <div class="section-header reveal" style="max-width:1200px; margin: 0 auto 64px;">
+    <p class="label">Why Opëam</p>
+    <h2>The <em>Experience</em></h2>
+  </div>
+  <div class="experience-inner">
+    <div class="experience-card reveal">
+      <div class="exp-num">01</div>
+      <div class="exp-title">Premium Ingredients</div>
+      <p class="exp-body">From Kagoshima wagyu to Hokkaido scallops, Spanish iberico pork and New Zealand lamb — every item is sourced for provenance and quality, not cost.</p>
+    </div>
+    <div class="experience-card reveal reveal-delay-1">
+      <div class="exp-num">02</div>
+      <div class="exp-title">Japanese–European Fusion</div>
+      <p class="exp-body">Chef Nicole's California-inspired philosophy meets Japanese precision and European classics. A menu that is light, technique-focused, and quietly revelatory.</p>
+    </div>
+    <div class="experience-card reveal reveal-delay-2">
+      <div class="exp-num">03</div>
+      <div class="exp-title">Wine &amp; Cocktail Bar</div>
+      <p class="exp-body">A curated selection of wines and cocktails, thoughtfully paired to complement the kitchen's offering. Opëam is as much a bar as it is a restaurant.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="section-cta">
+  <div class="cta-inner">
+    <p class="cta-label reveal">Make a Reservation</p>
+    <h2 class="cta-heading reveal">
+      _Take your dining<br>experience to <em>another level_</em>
+    </h2>
+    <div class="cta-buttons reveal">
+      <a href="tel:0167400782" class="btn-primary">Call 016-740 0782</a>
+      <a href="mailto:opeam.ipoh@gmail.com" class="btn-secondary">Email Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-text">Opëam</div>
+      <p>Premium Wine &amp; Dine Restrobar. Chef-driven Japanese–European dining in the heart of Ipoh, Malaysia. Ingredient-led. Technique-focused. Quietly refined.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Visit</h4>
+      <ul>
+        <li>28, Lebuh Hock Lee</li>
+        <li>Taman Hock Lee</li>
+        <li>Ipoh, Perak 31400</li>
+        <li>Malaysia</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:0167400782">016-740 0782</a></li>
+        <li><a href="mailto:opeam.ipoh@gmail.com">opeam.ipoh@gmail.com</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <ul>
+        <li>Sharing Plates</li>
+        <li>Skinny Pizza</li>
+        <li>Pasta &amp; Risotto</li>
+        <li>Main Course</li>
+        <li>Dessert</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Opëam Restrobar. All rights reserved.</p>
+    <div class="footer-social">
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Menu tabs
+  function showMenu(id) {
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('menu-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>
